@@ -1,16 +1,14 @@
 (function() {
     function saveValue(callback, newValue) {
-        var record = this.getRecord(),
-            column = this.getColumn(),
-            oldValue = this.value,
-            datatable = this.getDataTable();
+        var record = this.getRecord();
+        var column = this.getColumn();
         var connectCallbacks = {
             success: function() { callback(true, newValue); },
             failure: function() { callback(false, newValue); }
         };
         var id = record.getData('id');
         var url = '/stories/' + id + '/save.json';
-        var transaction = YAHOO.util.Connect.asyncRequest('POST',
+        YAHOO.util.Connect.asyncRequest('POST',
             url, connectCallbacks,
             'field=' + encodeURIComponent(column.key) + '&' +
             'value=' + encodeURIComponent(newValue));
