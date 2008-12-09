@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 
 class StoriesController(BaseController):
     def list(self):
+        c.heading = "Backlog"
         c.stories = model.meta.Session.query(model.Story).all()
         return render('/derived/stories/list.html')
 
