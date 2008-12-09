@@ -1,0 +1,3 @@
+include scrumboard/config/deployment.ini_tmpl
+recursive-include scrumboard/public *
+recursive-include scrumboard/templates *
