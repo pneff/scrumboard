@@ -21,3 +21,13 @@ class StoriesController(BaseController):
             'area': story.area, 'storypoints': story.storypoints}
             for story in c.stories]
         return {'stories': stories}
+
+    @jsonify
+    def save_json(self, id):
+        field = request.params.get('field')
+        new_value = request.params.get('value')
+        story = model.meta.Session.query(model.Story).get(id)
+        setattr(story, field, new_value)
+        model.meta.Session.add(story)
+        model.meta.Session.commit()
+        return {'status': 'ok'}
