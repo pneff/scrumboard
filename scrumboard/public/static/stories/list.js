@@ -1,9 +1,19 @@
 (function() {
+    var DEFAULT_STORY = {id: 0, title: 'Untitled', area: '', storypoints: ''};
+    
+    var storiesTable = null;
+    
     function saveValue(callback, newValue) {
         var record = this.getRecord();
         var column = this.getColumn();
         var connectCallbacks = {
-            success: function() { callback(true, newValue); },
+            success: function(o) {
+                var response = YAHOO.lang.JSON.parse(o.responseText);
+                if (record.getData('id') == '0') {
+                    record.setData('id', response.id);
+                }
+                callback(true, newValue);
+            },
             failure: function() { callback(false, newValue); }
         };
         var id = record.getData('id');
@@ -14,7 +24,7 @@
             'value=' + encodeURIComponent(newValue));
     }
 
-    function init() {
+    function initStoryTable() {
         var storiesColumns = [
             {
                 key: 'title',
@@ -45,7 +55,7 @@
             }
         });
 
-        var storiesTable = new YAHOO.widget.DataTable("stories",
+        storiesTable = new YAHOO.widget.DataTable("stories",
             storiesColumns, storiesDataSource);
         storiesTable.set("selectionMode", "singlecell");
         storiesTable.subscribe("cellClickEvent", storiesTable.onEventSelectCell);
@@ -78,5 +88,21 @@
         });
     }
     
-    YAHOO.util.Event.onContentReady('stories', init);
+    function initNewStoryLink() {
+        YAHOO.util.Event.on('new_story', 'click', function(ev) {
+            YAHOO.util.Event.preventDefault(ev);
+            storiesTable.addRow(DEFAULT_STORY);
+            var lastRow = storiesTable.getLastTrEl();
+            var cell = storiesTable.getFirstTdEl(lastRow);
+            storiesTable.unselectAllCells();
+            storiesTable.selectCell(cell);
+            storiesTable.focus();
+            setTimeout(function() {
+                storiesTable.showCellEditor(cell);
+            }, 50);
+        });
+    }
+    
+    YAHOO.util.Event.onContentReady('stories', initStoryTable);
+    YAHOO.util.Event.onContentReady('new_story', initNewStoryLink);
 })();

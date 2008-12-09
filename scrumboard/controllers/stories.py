@@ -24,10 +24,14 @@ class StoriesController(BaseController):
 
     @jsonify
     def save_json(self, id):
+        if id == '0':
+            story = model.Story()
+        else:
+            story = model.meta.Session.query(model.Story).get(id)
+        
         field = request.params.get('field')
         new_value = request.params.get('value')
-        story = model.meta.Session.query(model.Story).get(id)
         setattr(story, field, new_value)
         model.meta.Session.add(story)
         model.meta.Session.commit()
-        return {'status': 'ok'}
+        return {'status': 'ok', 'id': story.id}
