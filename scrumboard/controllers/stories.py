@@ -35,3 +35,12 @@ class StoriesController(BaseController):
         model.meta.Session.add(story)
         model.meta.Session.commit()
         return {'status': 'ok', 'id': story.id}
+
+    @jsonify
+    def delete_json(self, id):
+        story = model.meta.Session.query(model.Story).get(id)
+        if story is None:
+            abort(404)
+        model.meta.Session.delete(story)
+        model.meta.Session.commit()
+        return {'status': 'ok'}

@@ -23,6 +23,20 @@
             'field=' + encodeURIComponent(column.key) + '&' +
             'value=' + encodeURIComponent(newValue));
     }
+    
+    function removeStory(target) {
+        var record = storiesTable.getRecord(target);
+        YAHOO.util.Connect.asyncRequest('DELETE',
+            '/stories/' + record.getData('id') + '/delete.json', {
+                success: function (o) {
+                    storiesTable.deleteRow(target);
+                },
+                failure: function (o) {
+                    alert("Could not delete this row.");
+                }
+            }
+        );
+    }
 
     function initStoryTable() {
         var storiesColumns = [
@@ -45,6 +59,11 @@
                 editor: new YAHOO.widget.TextboxCellEditor({
                     validator:YAHOO.widget.DataTable.validateNumber,
                     asyncSubmitter: saveValue})
+            },
+            {
+                key: 'delete',
+                label: ' ',
+                className: 'delete-button'
             }
         ];
         var storiesDataSource = new YAHOO.util.XHRDataSource("/stories/list.json", {
@@ -58,7 +77,17 @@
         storiesTable = new YAHOO.widget.DataTable("stories",
             storiesColumns, storiesDataSource);
         storiesTable.set("selectionMode", "singlecell");
-        storiesTable.subscribe("cellClickEvent", storiesTable.onEventSelectCell);
+        storiesTable.subscribe("cellClickEvent", function(oArgs) {
+            var target = oArgs.target;
+            var column = storiesTable.getColumn(target);
+            if (column.key == 'delete') {
+                if (confirm('Are you sure you want to delete this story?')) {
+                    removeStory(target);
+                }
+            } else {
+                storiesTable.onEventSelectCell(oArgs);
+            }
+        });
         storiesTable.subscribe("cellMouseoverEvent", storiesTable.onEventHighlightCell);
         storiesTable.subscribe("cellMouseoutEvent", storiesTable.onEventUnhighlightCell);
         storiesTable.subscribe("cellDblclickEvent", storiesTable.onEventShowCellEditor);

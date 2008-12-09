@@ -1,0 +1,5 @@
+.delete-button {
+    cursor: pointer;
+    background: transparent url(/static/stories/delete.png) no-repeat center center;
+    width: 16px;  height: 16px;
+}
