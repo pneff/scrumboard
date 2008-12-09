@@ -1,7 +1,10 @@
 (function() {
+    var Dom = YAHOO.util.Dom;
+    
     var DEFAULT_STORY = {id: 0, title: 'Untitled', area: '', storypoints: ''};
     
     var storiesTable = null;
+    var ddRow = null;
     
     function saveValue(callback, newValue) {
         var record = this.getRecord();
@@ -40,6 +43,11 @@
 
     function initStoryTable() {
         var storiesColumns = [
+            {
+                key: 'drag',
+                label: ' ',
+                className: 'drag-button'
+            },
             {
                 key: 'title',
                 label: 'Title',
@@ -113,7 +121,55 @@
             if (storiesTable.getSelectedCells().length === 0) {
                 storiesTable.selectCell(storiesTable.getFirstTdEl());
                 storiesTable.focus();
+                
+                var rows = Dom.get('stories').getElementsByTagName('tr');
+                for (var i = 0; i < rows.length; i++) { 
+                    new YAHOO.util.DDTarget(rows[i]);
+                }
             }
+        });
+        
+        // Drag & Drop of rows
+        storiesTable.subscribe('cellMousedownEvent', function(ev) {
+            if (!Dom.hasClass(ev.target, 'drag-button')) {
+                return false;
+            }
+            var par = storiesTable.getTrEl(YAHOO.util.Event.getTarget(ev));
+            var selectedRow = storiesTable.getSelectedRows();
+            var prevSelected = null;
+            ddRow = new YAHOO.util.DDProxy(par.id);
+            ddRow.handleMouseDown(ev.event);
+            ddRow.onDragOver = function() {
+                Dom.addClass(arguments[1], 'over');
+                if (prevSelected && (prevSelected != arguments[1])) {
+                    Dom.removeClass(prevSelected, 'over');
+                }
+                prevSelected = arguments[1];
+            };
+            ddRow.onDragOut = function() {
+                Dom.removeClass(prevSelected, 'over');
+            };
+            ddRow.onDragDrop = function(ev) {
+                Dom.removeClass(prevSelected, 'over');
+                storiesTable.unselectAllRows();
+                YAHOO.util.DragDropMgr.stopDrag(ev, true);
+                Dom.get(this.getDragEl()).style.visibility = 'hidden';
+                Dom.setStyle(this.getEl(), 'position', 'static');
+                Dom.setStyle(this.getEl(), 'top', '');
+                Dom.setStyle(this.getEl(), 'left', '');
+                var drops = YAHOO.util.DragDropMgr.interactionInfo.drop;
+                if (drops.length > 0 && this.id != drops[0].id) {
+                    var source = Dom.get(this.id);
+                    var target = Dom.get(drops[0].id);
+                    source.parentNode.removeChild(source);
+                    target.parentNode.insertBefore(source, target);
+                }
+            };
+            return true;
+        });
+        storiesTable.subscribe("rowAddEvent", function(oArgs) {
+            var row = storiesTable.getTrEl(oArgs.record);
+            new YAHOO.util.DDTarget(row);
         });
     }
     

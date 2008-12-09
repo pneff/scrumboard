@@ -3,3 +3,16 @@
     background: transparent url(/static/stories/delete.png) no-repeat center center;
     width: 16px;  height: 16px;
 }
+
+/* Drag & Drop */
+.drag-button {
+    cursor: pointer;
+    background: red;
+    width: 8px;  height: 16px;
+}
+.drag-button div.yui-dt-liner {
+    padding: 4px 0;
+}
+.yui-skin-sam .yui-dt tr.over td {
+    background: #B2D2FF;
+}
