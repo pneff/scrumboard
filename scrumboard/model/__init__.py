@@ -1,38 +1,49 @@
 """The application's model objects"""
+import datetime
+
 import sqlalchemy as sa
-from sqlalchemy import orm
+from sqlalchemy import orm, schema, types
 
 from scrumboard.model import meta
 
 def init_model(engine):
     """Call me before using any of the tables or classes in the model"""
-    ## Reflected tables must be defined and mapped here
-    #global reflected_table
-    #reflected_table = sa.Table("Reflected", meta.metadata, autoload=True,
-    #                           autoload_with=engine)
-    #orm.mapper(Reflected, reflected_table)
-
     sm = orm.sessionmaker(autoflush=True, transactional=True, bind=engine)
-
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
 
 
-## Non-reflected tables may be defined and mapped at module level
-#foo_table = sa.Table("Foo", meta.metadata,
-#    sa.Column("id", sa.types.Integer, primary_key=True),
-#    sa.Column("bar", sa.types.String(255), nullable=False),
-#    )
-#
-#class Foo(object):
-#    pass
-#
-#orm.mapper(Foo, foo_table)
+sprint_table = schema.Table('sprint', meta.metadata,
+    schema.Column('id', types.Integer, schema.Sequence('sprint_seq_id', optional=True), primary_key=True),
+    schema.Column('start_date', types.Date(), nullable=False),
+    schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
+    schema.Column('updated_at', types.DateTime(), nullable=False, onupdate=datetime.datetime.now),
+)
 
+story_table = schema.Table('story', meta.metadata,
+    schema.Column('id', types.Integer, schema.Sequence('story_seq_id', optional=True), primary_key=True),
+    schema.Column('title', types.Unicode(255), nullable=False),
+    schema.Column('area', types.Unicode(255)),
+    schema.Column('storypoints', types.Integer),
+    schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
+    schema.Column('updated_at', types.DateTime(), nullable=False, onupdate=datetime.datetime.now),
+)
 
-## Classes for reflected tables may be defined here, but the table and
-## mapping itself must be done in the init_model function
-#reflected_table = None
-#
-#class Reflected(object):
-#    pass
+# n-n relation for stories to sprints
+sprintstory_table = schema.Table('sprintstory', meta.metadata,
+    schema.Column('sprint_id', types.Integer, schema.ForeignKey('sprint.id')),
+    schema.Column('story_id', types.Integer, schema.ForeignKey('story.id')),
+    schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
+    schema.Column('updated_at', types.DateTime(), nullable=False, onupdate=datetime.datetime.now),
+)
+
+class Sprint(object):
+    pass
+
+class Story(object):
+    pass
+
+orm.mapper(Sprint, sprint_table, properties={
+    'stories': orm.relation(Story, secondary=sprintstory_table)
+})
+orm.mapper(Story, story_table)
