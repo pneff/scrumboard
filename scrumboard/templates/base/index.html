@@ -1,0 +1,26 @@
+## -*- coding: utf-8 -*-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>${self.title()}</title>
+        ${self.head()}
+    </head>
+    <body>
+        ${self.header()}
+        ${self.tabs()}
+        ${self.menu()}
+        ${self.heading()}
+        ${self.breadcrumbs()}
+        ${next.body()}
+        ${self.footer()}
+        </body>
+</html>
+<%def name="title()">ScrumBoard</%def>
+<%def name="head()"></%def>
+<%def name="header()"></%def>
+<%def name="tabs()"></%def>
+<%def name="menu()"></%def>
+<%def name="heading()"><h1>${hasattr(c, 'heading') and c.heading or 'No Title'}</h1></%def>
+<%def name="breadcrumbs()"></%def>
+<%def name="footer()"></%def>
