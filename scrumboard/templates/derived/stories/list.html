@@ -1,5 +1,25 @@
 <%inherit file="/base/index.html"/>
 
-Testing
+<div id="stories"> </div>
 
 <%def name="title()">Stories</%def>
+<%def name="head()">
+    <!--CSS file (default YUI Sam Skin) -->
+    <link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.6.0/build/datatable/assets/skins/sam/datatable.css">
+    <!-- Dependencies -->
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/element/element-beta-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/datasource/datasource-min.js"></script>
+    <!-- OPTIONAL: JSON Utility (for DataSource) -->
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/json/json-min.js"></script>
+    <!-- OPTIONAL: Connection Manager (enables XHR for DataSource) -->
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/connection/connection-min.js"></script>
+    <!-- OPTIONAL: Get Utility (enables dynamic script nodes for DataSource) -->
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/get/get-min.js"></script>
+    <!-- OPTIONAL: Drag Drop (enables resizeable or reorderable columns) -->
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/dragdrop/dragdrop-min.js"></script>
+    <!-- Source files -->
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.6.0/build/datatable/datatable-min.js"></script>
+    <script type="text/javascript" src="/static/stories/list.js"></script>
+</%def>
+<%def name="body_attributes()">class="yui-skin-sam"</%def>

@@ -6,7 +6,7 @@
         <title>${self.title()}</title>
         ${self.head()}
     </head>
-    <body>
+    <body ${self.body_attributes()}>
         ${self.header()}
         ${self.tabs()}
         ${self.menu()}
@@ -17,6 +17,7 @@
         </body>
 </html>
 <%def name="title()">ScrumBoard</%def>
+<%def name="body_attributes()"></%def>
 <%def name="head()"></%def>
 <%def name="header()"></%def>
 <%def name="tabs()"></%def>

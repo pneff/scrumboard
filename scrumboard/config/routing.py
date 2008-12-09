@@ -18,8 +18,11 @@ def make_map():
     map.connect('/error/{action}', controller='error')
     map.connect('/error/{action}/{id}', controller='error')
 
-    # CUSTOM ROUTES HERE
+    # Explicit ScrumBoard routes
+    map.connect('/', controller='stories', action='list')
+    map.connect('/stories/list.json', controller='stories', action='list_json')
 
+    # Default routes
     map.connect('/{controller}/{action}')
     map.connect('/{controller}/{action}/{id}')
 
