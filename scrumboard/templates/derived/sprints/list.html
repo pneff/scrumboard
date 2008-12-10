@@ -1,0 +1,18 @@
+<%inherit file="/base/index.html"/>
+
+<table id="sprints">
+    <tr>
+        <th>ID</th>
+        <th>Start date</th>
+    </th>
+    % for sprint in c.sprints:
+    <tr>
+        <td>${sprint.id}</td>
+        <td>${sprint.start_date}</td>
+    </tr>
+    % endfor
+</table>
+
+<a href="/sprints/new" accesskey="n">Add <em>n</em>ew sprint</a>
+
+<%def name="title()">Sprints</%def>
