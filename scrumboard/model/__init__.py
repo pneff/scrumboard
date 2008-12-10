@@ -42,7 +42,32 @@ class Sprint(object):
     pass
 
 class Story(object):
-    pass
+    def reorder_all():
+        """Reorders the position of all stories to have additional position
+        space between all the stories.
+        """
+        pos = 0
+        stories = meta.Session.query(Story)
+        stories = stories.order_by(story_table.c.position)
+        for story in stories.all():
+            pos += 1
+            if story.position != pos * 10:
+                story.position = pos * 10
+                meta.Session.add(story)
+        meta.Session.commit()
+    reorder_all = staticmethod(reorder_all)
+
+    def reorder_if_necessary(id, newpos):
+        """Reorders all stories if necessary. If the newpos is already
+        occupied, then stories are reordered.
+        """
+        stories = meta.Session.query(Story)
+        equal_pos = stories.filter_by(position = newpos)
+        equal_pos = equal_pos.filter(story_table.c.id != id)
+        if equal_pos.first():
+            Story.reorder_all()
+    reorder_if_necessary = staticmethod(reorder_if_necessary)
+
 
 orm.mapper(Sprint, sprint_table, properties={
     'stories': orm.relation(Story, secondary=sprintstory_table)

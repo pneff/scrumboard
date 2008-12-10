@@ -23,21 +23,9 @@ class StoriesController(BaseController):
         after = request.params.get('after')
         stories = model.meta.Session.query(model.Story)
         story = stories.get(id)
-
-        # Check if we need to re-order
         story_after = stories.get(after)
-        equal_pos = stories.filter_by(position = story_after.position + 1)
-        equal_pos = equal_pos.filter(model.story_table.c.id != story.id)
-        if equal_pos.first():
-            # Need to reorder
-            pos = 0
-            all_stories = stories.order_by(model.story_table.c.position)
-            for tmpstory in all_stories.all():
-                pos += 1
-                if tmpstory.position != pos * 10:
-                    tmpstory.position = pos * 10
-                    model.meta.Session.add(tmpstory)
-        story_after = stories.get(after)
+        model.Story.reorder_if_necessary(story.id, story_after.position + 1)
+        story_after = stories.get(after) # Load again to get current position
         story.position = story_after.position + 1
         model.meta.Session.add(story)
         model.meta.Session.commit()
