@@ -43,33 +43,33 @@
 
     function initStoryTable() {
         var storiesColumns = [
-            {
-                key: 'drag',
+            {   key: 'drag',
                 label: ' ',
                 className: 'drag-button'
             },
-            {
-                key: 'title',
+            {   key: 'title',
                 label: 'Title',
                 sortable: true,
                 editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: saveValue})
             },
-            {
-                key: 'area',
+            {   key: 'area',
                 label: 'Area',
                 sortable: true,
                 editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: saveValue})
             },
-            {
-                key: 'storypoints',
+            {   key: 'storypoints',
                 label: 'Story points',
                 sortable: true,
                 editor: new YAHOO.widget.TextboxCellEditor({
                     validator:YAHOO.widget.DataTable.validateNumber,
                     asyncSubmitter: saveValue})
             },
-            {
-                key: 'delete',
+            {   key: 'position',
+                label: 'Position',
+                sortable: true,
+                sorted: true
+            },
+            {   key: 'delete',
                 label: ' ',
                 className: 'delete-button'
             }
@@ -78,7 +78,7 @@
             responseType: YAHOO.util.DataSource.TYPE_JSON,
             responseSchema: {
                 resultsList: "stories",
-                fields: ["id", "title", "area", "storypoints"]
+                fields: ["id", "title", "area", "storypoints", "position"]
             }
         });
         storiesTable = new YAHOO.widget.DataTable("stories",
