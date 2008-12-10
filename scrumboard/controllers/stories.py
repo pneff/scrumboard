@@ -35,12 +35,28 @@ class StoriesController(BaseController):
     def reorder(self):
         id = request.params.get('id')
         after = request.params.get('after')
-        story = model.meta.Session.query(model.Story).get(id)
-        story_after = model.meta.Session.query(model.Story).get(after)
+        stories = model.meta.Session.query(model.Story)
+        story = stories.get(id)
+
+        # Check if we need to re-order
+        story_after = stories.get(after)
+        equal_pos = stories.filter_by(position = story_after.position + 1)
+        equal_pos = equal_pos.filter(model.story_table.c.id != story.id)
+        if equal_pos.first():
+            # Need to reorder
+            pos = 0
+            all_stories = stories.order_by(model.story_table.c.position)
+            for tmpstory in all_stories.all():
+                pos += 1
+                if tmpstory.position != pos * 10:
+                    tmpstory.position = pos * 10
+                    model.meta.Session.add(tmpstory)
+        
+        story_after = stories.get(after)
         story.position = story_after.position + 1
         model.meta.Session.add(story)
         model.meta.Session.commit()
-        return id + " / " + after
+        return id + " / " + after + " / " + str(story.position)
 
     @jsonify
     def list_json(self):
