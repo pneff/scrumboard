@@ -22,7 +22,8 @@ def story_allocate_new_position():
 
 sprint_table = schema.Table('sprint', meta.metadata,
     schema.Column('id', types.Integer, schema.Sequence('sprint_seq_id', optional=True), primary_key=True),
-    schema.Column('start_date', types.Date(), nullable=False),
+    schema.Column('start_date', types.Date()),
+    schema.Column('team_size', types.Integer),
     schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
     schema.Column('updated_at', types.DateTime(), nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now),
 )
@@ -32,6 +33,8 @@ story_table = schema.Table('story', meta.metadata,
     schema.Column('title', types.Unicode(255), nullable=False),
     schema.Column('area', types.Unicode(255)),
     schema.Column('storypoints', types.Integer),
+    schema.Column('remaining_points', types.Integer),
+    schema.Column('hours', types.Integer),
     schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
     schema.Column('updated_at', types.DateTime(), nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now),
     schema.Column('position', types.Integer(), default=story_allocate_new_position),
