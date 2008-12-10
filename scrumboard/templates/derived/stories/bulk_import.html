@@ -3,6 +3,6 @@
 <p>Paste in a confluence table to be imported.</p>
 
 ${h.form_start(h.url_for(controller='stories', action='bulk_import'), method="post")}
-    ${h.textarea(name="content", rows="40", cols="60")}
+    ${h.textarea(name="content", rows="40", cols="100")}
     ${h.field(field=h.submit(value="Import", name='submit'))}
 ${h.form_end()}
