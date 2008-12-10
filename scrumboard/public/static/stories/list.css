@@ -7,7 +7,7 @@
 /* Drag & Drop */
 .drag-button {
     cursor: pointer;
-    background: red;
+    background: #dadada url(/static/stories/handle.png) no-repeat center center;
     width: 8px;  height: 16px;
 }
 .drag-button div.yui-dt-liner {
