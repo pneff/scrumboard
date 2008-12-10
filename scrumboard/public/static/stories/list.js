@@ -61,13 +61,16 @@
                 label: 'Story points',
                 sortable: true,
                 editor: new YAHOO.widget.TextboxCellEditor({
-                    validator:YAHOO.widget.DataTable.validateNumber,
+                    validator: YAHOO.widget.DataTable.validateNumber,
                     asyncSubmitter: saveValue})
             },
             {   key: 'position',
                 label: 'Position',
                 sortable: true,
-                sorted: true
+                sorted: true,
+                editor: new YAHOO.widget.TextboxCellEditor({
+                    validator: YAHOO.widget.DataTable.validateNumber,
+                    asyncSubmitter: saveValue})
             },
             {   key: 'delete',
                 label: ' ',
