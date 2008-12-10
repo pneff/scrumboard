@@ -11,7 +11,17 @@ log = logging.getLogger(__name__)
 class SprintsController(BaseController):
     def list(self):
         c.heading = "Sprints"
-        c.stories = model.meta.Session.query(model.Sprint)
-        c.stories = c.stories.order_by(model.sprint_table.c.start_date)
-        c.stories = c.stories.all()
+        c.sprints = model.meta.Session.query(model.Sprint)
+        c.sprints = c.sprints.order_by(model.sprint_table.c.start_date)
+        c.sprints = c.sprints.all()
         return render('/derived/sprints/list.html')
+    
+    def new(self):
+        sprint = model.Sprint()
+        model.meta.Session.add(sprint)
+        model.meta.Session.commit()
+        return redirect_to(controller='sprints', action='show', id=sprint.id)
+    
+    def show(self, id):
+        sprint = model.meta.Session.query(model.Sprint).get(id)
+        return render('/derived/sprints/show.html')
