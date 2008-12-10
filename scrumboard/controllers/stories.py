@@ -40,9 +40,11 @@ class StoriesController(BaseController):
 
     @jsonify
     def save_json(self, id):
+        from sqlalchemy import desc
         if id == '0':
             story = model.Story()
-            last_story = stories.order_by(model.story_table.c.position).last()
+            stories = model.meta.Session.query(model.Story)
+            last_story = stories.order_by(desc(model.story_table.c.position)).first()
             story.position = last_story.position + 10
         else:
             story = model.meta.Session.query(model.Story).get(id)
@@ -61,6 +63,15 @@ class StoriesController(BaseController):
         model.meta.Session.delete(story)
         model.meta.Session.commit()
         return {'status': 'ok'}
+    
+    def bulk_import(self):
+        if request.method == 'GET':
+            return render('/derived/stories/bulk_import.html')
+        else:
+            from scrumboard.model.importer import StoryImporter
+            importer = StoryImporter()
+            importer.fetch(request.params.get('content'))
+            return redirect_to(controller='stories', action='list')
 
     def __get_story_dict(self, story):
         return {'id': story.id, 'title': story.title, 'area': story.area,
