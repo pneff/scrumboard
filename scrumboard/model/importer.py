@@ -10,9 +10,7 @@ class StoryImporter(object):
         """Imports data from the confluence table."""
         for line in content.split("\n"):
             log.debug("Line: %s", line)
-
-            # Replace links with HTML
-            line = re.sub('\[([^|]+)\|([^]]+)\]', '<a href="\\2">\\1</a>', line)
+            line = self.__confluence_to_html(line)
             cols = line.split("|")
             log.debug("Columns: %d", len(cols))
             if len(cols) >= 5:
@@ -26,7 +24,16 @@ class StoryImporter(object):
                 story.title = title
                 story.area = area
                 story.storypoints = storypoints
-                story.position = new_pos
-                new_pos += 10
                 model.meta.Session.add(story)
         model.meta.Session.commit()
+    
+    def __confluence_to_html(self, content):
+        # Replace links with HTML
+        content = re.sub('\[([^|]+)\|([^]]+)\]', '<a href="\\2">\\1</a>', content)
+        # Replace *foo* with <strong>foo</strong>
+        content = re.sub('\*([^*]+)\*', '<strong>\\1</strong>', content)
+        # Replace escaped \! with !
+        content = content.replace('\!', '!')
+        # Replace escaped \[ with [
+        content = content.replace('\[', '[')
+        return content
