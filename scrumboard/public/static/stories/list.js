@@ -2,46 +2,6 @@
     var Dom = YAHOO.util.Dom;
     
     var DEFAULT_STORY = {id: 0, title: 'Untitled', area: '', storypoints: ''};
-    var STORIES_DATA_COLUMNS = [
-        {
-            key: 'drag',
-            label: ' ',
-            className: 'drag-button'
-        },
-        {
-            key: 'title',
-            label: 'Title',
-            sortable: true,
-            editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: saveValue})
-        },
-        {
-            key: 'area',
-            label: 'Area',
-            sortable: true,
-            editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: saveValue})
-        },
-        {
-            key: 'storypoints',
-            label: 'Story points',
-            sortable: true,
-            editor: new YAHOO.widget.TextboxCellEditor({
-                validator:YAHOO.widget.DataTable.validateNumber,
-                asyncSubmitter: saveValue})
-        },
-        {
-            key: 'delete',
-            label: ' ',
-            className: 'delete-button'
-        }
-    ];
-    var STORIES_DATA_SOURCE = new YAHOO.util.XHRDataSource("/stories/list.json", {
-        responseType: YAHOO.util.DataSource.TYPE_JSON,
-        responseSchema: {
-            resultsList: "stories",
-            fields: ["id", "title", "area", "storypoints"]
-        }
-    });
-    
     
     var storiesTable = null;
     var ddRow = null;
@@ -82,8 +42,47 @@
     }
 
     function initStoryTable() {
+        var storiesColumns = [
+            {
+                key: 'drag',
+                label: ' ',
+                className: 'drag-button'
+            },
+            {
+                key: 'title',
+                label: 'Title',
+                sortable: true,
+                editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: saveValue})
+            },
+            {
+                key: 'area',
+                label: 'Area',
+                sortable: true,
+                editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: saveValue})
+            },
+            {
+                key: 'storypoints',
+                label: 'Story points',
+                sortable: true,
+                editor: new YAHOO.widget.TextboxCellEditor({
+                    validator:YAHOO.widget.DataTable.validateNumber,
+                    asyncSubmitter: saveValue})
+            },
+            {
+                key: 'delete',
+                label: ' ',
+                className: 'delete-button'
+            }
+        ];
+        var storiesDataSource = new YAHOO.util.XHRDataSource("/stories/list.json", {
+            responseType: YAHOO.util.DataSource.TYPE_JSON,
+            responseSchema: {
+                resultsList: "stories",
+                fields: ["id", "title", "area", "storypoints"]
+            }
+        });
         storiesTable = new YAHOO.widget.DataTable("stories",
-            STORIES_DATA_COLUMNS, STORIES_DATA_SOURCE);
+            storiesColumns, storiesDataSource);
         storiesTable.set("selectionMode", "singlecell");
         storiesTable.subscribe("cellClickEvent", function(oArgs) {
             var target = oArgs.target;
