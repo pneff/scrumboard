@@ -1,19 +1,9 @@
-This file is for you to describe the ScrumBoard application. Typically
-you would include information such as the information below:
+ScrumBoard is a simple application is a tool to help with Scrum backlog and
+sprint management. It strives to keep things simple.
 
-Installation and Setup
-======================
+This is a Pylons application and requires SQLAlchemy 0.5 (which is currently
+a release candidate). Quick getting started guide to get up and running:
+  $ paster setup-app development.ini
+  $ paster serve development.ini
 
-Install ``ScrumBoard`` using easy_install::
-
-    easy_install ScrumBoard
-
-Make a config file as follows::
-
-    paster make-config ScrumBoard config.ini
-
-Tweak the config file as appropriate and then setup the application::
-
-    paster setup-app config.ini
-
-Then you are ready to go.
+This serves the application at http://localhost:5000/.
