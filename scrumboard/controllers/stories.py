@@ -15,8 +15,26 @@ class StoriesController(BaseController):
         c.stories = model.meta.Session.query(model.Story).all()
         return render('/derived/stories/list.html')
 
+    def list2(self):
+        self.list()
+        html = ["<ul>"]
+        for story in c.stories:
+            html.append("<li>")
+            html.append(str(story.id))
+            html.append(": ")
+            html.append(story.title)
+            html.append("</li>")
+        html.append("</ul>")
+        return "".join(html)
+    
+    def reorder(self):
+        id = request.params.get('id')
+        after = request.params.get('after')
+        return id + " / " + after
+
     @jsonify
     def list_json(self):
+        response.headers['Content-Type'] = 'text/plain'
         self.list()
         stories = [{'id': story.id, 'title': story.title,
             'area': story.area, 'storypoints': story.storypoints}

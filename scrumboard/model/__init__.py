@@ -27,6 +27,7 @@ story_table = schema.Table('story', meta.metadata,
     schema.Column('storypoints', types.Integer),
     schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
     schema.Column('updated_at', types.DateTime(), nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now),
+    schema.Column('position', types.Integer()),
 )
 
 # n-n relation for stories to sprints
