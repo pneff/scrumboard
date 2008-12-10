@@ -12,7 +12,9 @@ log = logging.getLogger(__name__)
 class StoriesController(BaseController):
     def list(self):
         c.heading = "Backlog"
-        c.stories = model.meta.Session.query(model.Story).all()
+        c.stories = model.meta.Session.query(model.Story)
+        c.stories = c.stories.order_by(model.story_table.c.position)
+        c.stories = c.stories.all()
         return render('/derived/stories/list.html')
 
     def list2(self):
@@ -31,7 +33,8 @@ class StoriesController(BaseController):
             html.append("</li>")
         html.append("</ul>")
         return "".join(html)
-    
+
+    @jsonify
     def reorder(self):
         id = request.params.get('id')
         after = request.params.get('after')
@@ -56,11 +59,10 @@ class StoriesController(BaseController):
         story.position = story_after.position + 1
         model.meta.Session.add(story)
         model.meta.Session.commit()
-        return id + " / " + after + " / " + str(story.position)
+        return {'status': 'ok', 'newpos': story.position}
 
     @jsonify
     def list_json(self):
-        response.headers['Content-Type'] = 'text/plain'
         self.list()
         stories = [{'id': story.id, 'title': story.title,
             'area': story.area, 'storypoints': story.storypoints}

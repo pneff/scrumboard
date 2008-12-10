@@ -161,8 +161,12 @@
                 if (drops.length > 0 && this.id != drops[0].id) {
                     var source = Dom.get(this.id);
                     var target = Dom.get(drops[0].id);
-                    source.parentNode.removeChild(source);
-                    target.parentNode.insertBefore(source, target);
+                    var sourceRecord = getRecord(this.id);
+                    var targetRecord = getRecord(drops[0].id);
+                    console.debug(sourceRecord);
+                    console.debug(targetRecord);
+                    // source.parentNode.removeChild(source);
+                    // target.parentNode.insertBefore(source, target);
                 }
             };
             return true;
