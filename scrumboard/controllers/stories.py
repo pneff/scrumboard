@@ -40,12 +40,8 @@ class StoriesController(BaseController):
 
     @jsonify
     def save_json(self, id):
-        from sqlalchemy import desc
         if id == '0':
             story = model.Story()
-            stories = model.meta.Session.query(model.Story)
-            last_story = stories.order_by(desc(model.story_table.c.position)).first()
-            story.position = last_story.position + 10
         else:
             story = model.meta.Session.query(model.Story).get(id)
         field = request.params.get('field')

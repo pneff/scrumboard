@@ -8,11 +8,6 @@ log = logging.getLogger(__name__)
 class StoryImporter(object):
     def fetch(self, content):
         """Imports data from the confluence table."""
-        from sqlalchemy import desc
-        stories = model.meta.Session.query(model.Story)
-        last_story = stories.order_by(desc(model.story_table.c.position)).first()
-        new_pos = last_story.position + 10
-
         for line in content.split("\n"):
             log.debug("Line: %s", line)
 

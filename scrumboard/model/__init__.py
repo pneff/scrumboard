@@ -2,7 +2,7 @@
 import datetime
 
 import sqlalchemy as sa
-from sqlalchemy import orm, schema, types
+from sqlalchemy import orm, schema, types, desc
 
 from scrumboard.model import meta
 
@@ -12,6 +12,13 @@ def init_model(engine):
     meta.engine = engine
     meta.Session = orm.scoped_session(sm)
 
+def story_allocate_new_position():
+    stories = meta.Session.query(Story)
+    last_story = stories.order_by(desc(story_table.c.position)).first()
+    if last_story is None:
+        return 10
+    else:
+        return last_story.position + 10
 
 sprint_table = schema.Table('sprint', meta.metadata,
     schema.Column('id', types.Integer, schema.Sequence('sprint_seq_id', optional=True), primary_key=True),
@@ -27,7 +34,7 @@ story_table = schema.Table('story', meta.metadata,
     schema.Column('storypoints', types.Integer),
     schema.Column('created_at', types.DateTime(), nullable=False, default=datetime.datetime.now),
     schema.Column('updated_at', types.DateTime(), nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now),
-    schema.Column('position', types.Integer()),
+    schema.Column('position', types.Integer(), default=story_allocate_new_position),
 )
 
 # n-n relation for stories to sprints
