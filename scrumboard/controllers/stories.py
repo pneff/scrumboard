@@ -35,7 +35,7 @@ class StoriesController(BaseController):
         return "".join(html)
 
     @jsonify
-    def reorder(self):
+    def reorder_json(self):
         id = request.params.get('id')
         after = request.params.get('after')
         stories = model.meta.Session.query(model.Story)

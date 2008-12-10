@@ -160,12 +160,21 @@
                 if (drops.length > 0 && this.id != drops[0].id) {
                     var source = Dom.get(this.id);
                     var target = Dom.get(drops[0].id);
-                    var sourceRecord = getRecord(this.id);
-                    var targetRecord = getRecord(drops[0].id);
-                    console.debug(sourceRecord);
-                    console.debug(targetRecord);
-                    // source.parentNode.removeChild(source);
-                    // target.parentNode.insertBefore(source, target);
+                    var sourceRecord = storiesTable.getRecord(this.id);
+                    var targetRecord = storiesTable.getRecord(drops[0].id);
+                    var url = '/stories/reorder.json';
+                    YAHOO.util.Connect.asyncRequest('POST',
+                        url, {
+                            success: function(o) {
+                                source.parentNode.removeChild(source);
+                                target.parentNode.insertBefore(source, target);
+                            },
+                            failure: function() {
+                                alert("Could not move record.");
+                            }
+                        },
+                        'id=' + encodeURIComponent(sourceRecord.getData('id')) + '&' +
+                        'after=' + encodeURIComponent(targetRecord.getData('id')));
                 }
             };
             return true;
