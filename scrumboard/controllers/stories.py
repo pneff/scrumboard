@@ -71,6 +71,8 @@ class StoriesController(BaseController):
     def save_json(self, id):
         if id == '0':
             story = model.Story()
+            last_story = stories.order_by(model.story_table.c.position).last()
+            story.position = last_story.position + 10
         else:
             story = model.meta.Session.query(model.Story).get(id)
         field = request.params.get('field')
