@@ -18,9 +18,14 @@ class StoriesController(BaseController):
     def list2(self):
         self.list()
         html = ["<ul>"]
+        c.stories = model.meta.Session.query(model.Story)
+        c.stories = c.stories.order_by(model.story_table.c.position)
+        c.stories = c.stories.all()
         for story in c.stories:
             html.append("<li>")
             html.append(str(story.id))
+            html.append(": ")
+            html.append(str(story.position))
             html.append(": ")
             html.append(story.title)
             html.append("</li>")
@@ -30,6 +35,11 @@ class StoriesController(BaseController):
     def reorder(self):
         id = request.params.get('id')
         after = request.params.get('after')
+        story = model.meta.Session.query(model.Story).get(id)
+        story_after = model.meta.Session.query(model.Story).get(after)
+        story.position = story_after.position + 1
+        model.meta.Session.add(story)
+        model.meta.Session.commit()
         return id + " / " + after
 
     @jsonify
