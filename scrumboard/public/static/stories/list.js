@@ -118,7 +118,7 @@
         // Focus the first cell on load
         storiesTable.subscribe("postRenderEvent", function(oArgs) {
             if (storiesTable.getSelectedCells().length === 0) {
-                storiesTable.selectCell(storiesTable.getFirstTdEl());
+                storiesTable.selectCell(storiesTable.getNextTdEl(storiesTable.getFirstTdEl()));
                 storiesTable.focus();
                 
                 var rows = Dom.get('stories').getElementsByTagName('tr');
@@ -192,7 +192,7 @@
             YAHOO.util.Event.preventDefault(ev);
             storiesTable.addRow(DEFAULT_STORY);
             var lastRow = storiesTable.getLastTrEl();
-            var cell = storiesTable.getFirstTdEl(lastRow);
+            var cell = storiesTable.getNextTdEl(storiesTable.getFirstTdEl(lastRow));
             storiesTable.unselectAllCells();
             storiesTable.selectCell(cell);
             storiesTable.focus();
