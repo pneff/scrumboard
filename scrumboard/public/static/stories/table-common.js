@@ -5,16 +5,20 @@
     YAHOO.scrumboard.stories.table = function(id) {
         this.elementId = id;
         this.ddRow = null;
-        this.table = this.createTableObject(id);
+        this.table = this.setupTable(id);
     };
     YAHOO.scrumboard.stories.table.prototype = {
-        createTableObject: function(id) {
+        setupTable: function(id) {
             var columns = this.getColumns();
             var data = this.getDataSource();
-            var table = new YAHOO.widget.DataTable(id, columns, data);
+            var table = this.createTableObject(id, columns, data);
             table.set("selectionMode", "singlecell");
             this.subscribeTableEvents(table);
             return table;
+        },
+        
+        createTableObject: function(id, columns, data) {
+            return new YAHOO.widget.DataTable(id, columns, data);
         },
         
         getColumns: function() {
