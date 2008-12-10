@@ -167,7 +167,7 @@
                         url, {
                             success: function(o) {
                                 source.parentNode.removeChild(source);
-                                target.parentNode.insertBefore(source, target);
+                                target.parentNode.insertBefore(source, target.nextSibling);
                             },
                             failure: function() {
                                 alert("Could not move record.");
