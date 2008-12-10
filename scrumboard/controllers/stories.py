@@ -54,19 +54,17 @@ class StoriesController(BaseController):
                 if tmpstory.position != pos * 10:
                     tmpstory.position = pos * 10
                     model.meta.Session.add(tmpstory)
-        
         story_after = stories.get(after)
         story.position = story_after.position + 1
         model.meta.Session.add(story)
         model.meta.Session.commit()
-        return {'status': 'ok', 'newpos': story.position}
+        return {'status': 'ok', 'newpos': story.position,
+                'record': self.__get_story_dict(story)}
 
     @jsonify
     def list_json(self):
         self.list()
-        stories = [{'id': story.id, 'title': story.title,
-            'area': story.area, 'storypoints': story.storypoints}
-            for story in c.stories]
+        stories = [self.__get_story_dict(story) for story in c.stories]
         return {'stories': stories}
 
     @jsonify
@@ -75,7 +73,6 @@ class StoriesController(BaseController):
             story = model.Story()
         else:
             story = model.meta.Session.query(model.Story).get(id)
-        
         field = request.params.get('field')
         new_value = request.params.get('value')
         setattr(story, field, new_value)
@@ -91,3 +88,7 @@ class StoriesController(BaseController):
         model.meta.Session.delete(story)
         model.meta.Session.commit()
         return {'status': 'ok'}
+
+    def __get_story_dict(self, story):
+        return {'id': story.id, 'title': story.title, 'area': story.area,
+                'storypoints': story.storypoints, 'position': story.position}

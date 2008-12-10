@@ -166,8 +166,10 @@
                     YAHOO.util.Connect.asyncRequest('POST',
                         url, {
                             success: function(o) {
-                                source.parentNode.removeChild(source);
-                                target.parentNode.insertBefore(source, target.nextSibling);
+                                var response = YAHOO.lang.JSON.parse(o.responseText);
+                                storiesTable.deleteRow(sourceRecord);
+                                storiesTable.addRow(response.record,
+                                    storiesTable.getRecordIndex(targetRecord)+1);
                             },
                             failure: function() {
                                 alert("Could not move record.");
