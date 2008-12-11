@@ -1,7 +1,9 @@
 <%inherit file="/base/index.html"/>
 <%namespace file="/component/storytable.html" name="storytable"/>
 
-<div id="stories"> </div>
+<div id="stories" class="hidden"></div>
+<a href="" id="stories_close_link" class="hidden">Close story selector</a>
+<a href="" id="stories_link">Add stories</a>
 
 <%def name="title()">Sprint ${c.id}</%def>
 <%def name="heading()"><h1>${self.title()}</h1></%def>
