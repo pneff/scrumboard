@@ -92,17 +92,17 @@
         },
 
         subscribeTableEvents: function(table) {
-            table.subscribe("cellClickEvent", this.onCellClick, this);
+            table.subscribe("cellClickEvent", this.onCellClick, null, this);
             table.subscribe("cellMouseoverEvent", table.onEventHighlightCell);
             table.subscribe("cellMouseoutEvent", table.onEventUnhighlightCell);
             table.subscribe("cellDblclickEvent", table.onEventShowCellEditor);
-            table.subscribe("tableKeyEvent", this.onKeyEvent, this);
+            table.subscribe("tableKeyEvent", this.onKeyEvent, null, this);
             var focusFunction = function(oArgs) { this.table.focus(); };
             table.subscribe("editorSaveEvent", focusFunction);
             table.subscribe("editorCancelEvent", focusFunction);
-            table.subscribe("postRenderEvent", this.onPostRender, this);
-            table.subscribe('cellMousedownEvent', this.onCellMousedown, this);
-            table.subscribe("rowAddEvent", this.onRowAdd, this);
+            table.subscribe("postRenderEvent", this.onPostRender, null, this);
+            table.subscribe('cellMousedownEvent', this.onCellMousedown, null, this);
+            table.subscribe("rowAddEvent", this.onRowAdd, null, this);
         },
         
         getListUrl: function() {

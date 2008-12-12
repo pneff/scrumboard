@@ -32,3 +32,10 @@ class SprintsController(BaseController):
         sprint = model.meta.Session.query(model.Sprint).get(id)
         stories = [story.get_as_dict() for story in sprint.stories]
         return {'stories': stories}
+
+    @jsonify
+    def add_story_json(self, id):
+        story_id = request.params.get('story')
+        sprint = model.meta.Session.query(model.Sprint).get(id)
+        story = model.meta.Session.query(model.Story).get(story_id)
+        return {'story': story.get_as_dict()}
