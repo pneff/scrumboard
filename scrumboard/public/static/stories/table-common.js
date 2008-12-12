@@ -22,6 +22,10 @@
         },
         
         getColumns: function() {
+            var that = this;
+            var onTableSaveValue = function(callback, newValue) {
+                that.onTableSaveValue(this, callback, newValue);
+            };
             return [
                 {   key: 'drag',
                     label: ' ',
@@ -31,20 +35,20 @@
                     label: 'Title',
                     sortable: true,
                     editor: new YAHOO.widget.TextboxCellEditor({
-                        asyncSubmitter: this.onTableSaveValue})
+                        asyncSubmitter: onTableSaveValue})
                 },
                 {   key: 'area',
                     label: 'Area',
                     sortable: true,
                     editor: new YAHOO.widget.TextboxCellEditor({
-                        asyncSubmitter: this.onTableSaveValue})
+                        asyncSubmitter: onTableSaveValue})
                 },
                 {   key: 'storypoints',
                     label: 'Story points',
                     sortable: true,
                     editor: new YAHOO.widget.TextboxCellEditor({
                         validator: YAHOO.widget.DataTable.validateNumber,
-                        asyncSubmitter: this.onTableSaveValue})
+                        asyncSubmitter: onTableSaveValue})
                 },
                 {   key: 'position',
                     label: 'Position',
@@ -52,7 +56,7 @@
                     sorted: true,
                     editor: new YAHOO.widget.TextboxCellEditor({
                         validator: YAHOO.widget.DataTable.validateNumber,
-                        asyncSubmitter: this.onTableSaveValue})
+                        asyncSubmitter: onTableSaveValue})
                 },
                 {   key: 'delete',
                     label: ' ',
@@ -61,9 +65,9 @@
             ];
         },
         
-        onTableSaveValue: function(callback, newValue) {
-            var record = this.getRecord();
-            var column = this.getColumn();
+        onTableSaveValue: function(editor, callback, newValue) {
+            var record = editor.getRecord();
+            var column = editor.getColumn();
             var connectCallbacks = {
                 success: function(o) {
                     var response = YAHOO.lang.JSON.parse(o.responseText);
@@ -95,7 +99,7 @@
             table.subscribe("cellClickEvent", this.onCellClick, null, this);
             table.subscribe("cellMouseoverEvent", table.onEventHighlightCell);
             table.subscribe("cellMouseoutEvent", table.onEventUnhighlightCell);
-            table.subscribe("cellDblclickEvent", table.onEventShowCellEditor);
+            table.subscribe("cellDblclickEvent", table.onEventShowCellEditor, null, this);
             table.subscribe("tableKeyEvent", this.onKeyEvent, null, this);
             var focusFunction = function(oArgs) { this.table.focus(); };
             table.subscribe("editorSaveEvent", focusFunction);
@@ -139,10 +143,11 @@
 
         onKeyEvent: function(oArgs) {
             if (oArgs.event.keyCode == YAHOO.util.KeyListener.KEY.ENTER) {
-                var cells = this.table.getSelectedTdEls();
+                var table = this.table;
+                var cells = table.getSelectedTdEls();
                 if (cells.length > 0) {
                     setTimeout(function() {
-                        this.table.showCellEditor(cells[0]);
+                        table.showCellEditor(cells[0]);
                     }, 50);
                 }
             }
@@ -168,8 +173,10 @@
             if (!Dom.hasClass(ev.target, 'drag-button')) {
                 return false;
             }
-            var par = this.table.getTrEl(YAHOO.util.Event.getTarget(ev));
-            var selectedRow = this.table.getSelectedRows();
+            var table = this.table;
+            var reorderUrl = this.getReorderUrl();
+            var par = table.getTrEl(YAHOO.util.Event.getTarget(ev));
+            var selectedRow = table.getSelectedRows();
             var prevSelected = null;
             this.ddRow = new YAHOO.util.DDProxy(par.id);
             this.ddRow.handleMouseDown(ev.event);
