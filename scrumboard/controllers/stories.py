@@ -30,12 +30,12 @@ class StoriesController(BaseController):
         model.meta.Session.add(story)
         model.meta.Session.commit()
         return {'status': 'ok', 'newpos': story.position,
-                'record': self.__get_story_dict(story)}
+                'record': story.get_as_dict()}
 
     @jsonify
     def list_json(self):
         self.list()
-        stories = [self.__get_story_dict(story) for story in c.stories]
+        stories = [story.get_as_dict() for story in c.stories]
         return {'stories': stories}
 
     @jsonify
@@ -68,7 +68,3 @@ class StoriesController(BaseController):
             importer = StoryImporter()
             importer.fetch(request.params.get('content'))
             return redirect_to(controller='stories', action='list')
-
-    def __get_story_dict(self, story):
-        return {'id': story.id, 'title': story.title, 'area': story.area,
-                'storypoints': story.storypoints, 'position': story.position}

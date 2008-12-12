@@ -77,6 +77,10 @@ class Story(object):
         if equal_pos.first():
             Story.reorder_all()
     reorder_if_necessary = staticmethod(reorder_if_necessary)
+    
+    def get_as_dict(self):
+        return {'id': self.id, 'title': self.title, 'area': self.area,
+                'storypoints': self.storypoints, 'position': self.position}
 
 
 orm.mapper(Sprint, sprint_table, properties={

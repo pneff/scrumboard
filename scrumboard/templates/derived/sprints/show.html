@@ -1,6 +1,8 @@
 <%inherit file="/base/index.html"/>
 <%namespace file="/component/storytable.html" name="storytable"/>
 
+<div id="sprintstories"></div>
+
 <div id="stories" class="hidden"></div>
 <a href="" id="stories_close_link" class="hidden">Close story selector</a>
 <a href="" id="stories_link">Add stories</a>
@@ -12,4 +14,5 @@
     ${storytable.head()}
     <script type="text/javascript" src="/static/sprints/selector.js"></script>
     <link type="text/css" rel="stylesheet" href="/static/sprints/selector.css" />
+    <script type="text/javascript" src="/static/sprints/stories.js"></script>
 </%def>

@@ -24,6 +24,7 @@ def make_map():
     map.connect('/stories/reorder.json', controller='stories', action='reorder_json')
     map.connect('/stories/{id}/save.json', controller='stories', action='save_json')
     map.connect('/stories/{id}/delete.json', controller='stories', action='delete_json')
+    map.connect('/sprints/{id}/stories.json', controller='sprints', action='stories_json')
 
     # Default routes
     map.connect('/{controller}/{action}')

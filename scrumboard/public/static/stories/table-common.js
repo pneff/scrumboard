@@ -74,16 +74,15 @@
                 },
                 failure: function() { callback(false, newValue); }
             };
-            var id = record.getData('id');
-            var url = '/stories/' + id + '/save.json';
             YAHOO.util.Connect.asyncRequest('POST',
-                url, connectCallbacks,
+                this.getSaveUrl(record.getData('id')),
+                connectCallbacks,
                 'field=' + encodeURIComponent(column.key) + '&' +
                 'value=' + encodeURIComponent(newValue));
         },
         
         getDataSource: function() {
-            return new YAHOO.util.XHRDataSource("/stories/list.json", {
+            return new YAHOO.util.XHRDataSource(this.getListUrl(), {
                 responseType: YAHOO.util.DataSource.TYPE_JSON,
                 responseSchema: {
                     resultsList: "stories",
@@ -104,6 +103,22 @@
             table.subscribe("postRenderEvent", this.onPostRender, this);
             table.subscribe('cellMousedownEvent', this.onCellMousedown, this);
             table.subscribe("rowAddEvent", this.onRowAdd, this);
+        },
+        
+        getListUrl: function() {
+            return "/stories/list.json";
+        },
+        
+        getSaveUrl: function(id) {
+            return '/stories/' + id + '/save.json';
+        },
+        
+        getReorderUrl: function() {
+            return '/stories/reorder.json';
+        },
+        
+        getDeleteUrl: function(id) {
+            return '/stories/' + id + '/delete.json';
         },
 
         onCellClick: function(oArgs) {
@@ -178,9 +193,9 @@
                     var target = Dom.get(drops[0].id);
                     var sourceRecord = this.table.getRecord(this.id);
                     var targetRecord = this.table.getRecord(drops[0].id);
-                    var url = '/stories/reorder.json';
                     YAHOO.util.Connect.asyncRequest('POST',
-                        url, {
+                        this.getReorderUrl(),
+                        {
                             success: function(o) {
                                 var response = YAHOO.lang.JSON.parse(o.responseText);
                                 this.table.deleteRow(sourceRecord);
@@ -206,7 +221,8 @@
         removeStory: function(target) {
             var record = this.table.getRecord(target);
             YAHOO.util.Connect.asyncRequest('DELETE',
-                '/stories/' + record.getData('id') + '/delete.json', {
+                this.getDeleteUrl(record.getData('id')),
+                {
                     success: function (o) {
                         this.table.deleteRow(target);
                     },
