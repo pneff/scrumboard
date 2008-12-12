@@ -42,3 +42,12 @@ class SprintsController(BaseController):
         model.meta.Session.add(sprint)
         model.meta.Session.commit()
         return {'story': story.get_as_dict()}
+
+    @jsonify
+    def delete_story_json(self, id, story_id):
+        story = model.meta.Session.query(model.Story).get(story_id)
+        sprint = model.meta.Session.query(model.Sprint).get(id)
+        sprint.stories.remove(story)
+        model.meta.Session.add(sprint)
+        model.meta.Session.commit()
+        return {'status': 'ok'}

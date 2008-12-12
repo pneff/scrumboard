@@ -125,11 +125,15 @@
             var target = oArgs.target;
             var column = this.table.getColumn(target);
             if (column.key == 'delete') {
-                if (confirm('Are you sure you want to delete this story?')) {
-                    this.removeStory(target);
-                }
+                this.onDeleteCellClick(target);
             } else {
                 this.table.onEventSelectCell(oArgs);
+            }
+        },
+        
+        onDeleteCellClick: function(target) {
+            if (confirm('Are you sure you want to delete this story?')) {
+                this.removeStory(target);
             }
         },
 
@@ -180,8 +184,9 @@
                 Dom.removeClass(prevSelected, 'over');
             };
             this.ddRow.onDragDrop = function(ev) {
+                var table = this.table;
                 Dom.removeClass(prevSelected, 'over');
-                this.table.unselectAllRows();
+                table.unselectAllRows();
                 YAHOO.util.DragDropMgr.stopDrag(ev, true);
                 Dom.get(this.getDragEl()).style.visibility = 'hidden';
                 Dom.setStyle(this.getEl(), 'position', 'static');
@@ -191,16 +196,16 @@
                 if (drops.length > 0 && this.id != drops[0].id) {
                     var source = Dom.get(this.id);
                     var target = Dom.get(drops[0].id);
-                    var sourceRecord = this.table.getRecord(this.id);
-                    var targetRecord = this.table.getRecord(drops[0].id);
+                    var sourceRecord = table.getRecord(this.id);
+                    var targetRecord = table.getRecord(drops[0].id);
                     YAHOO.util.Connect.asyncRequest('POST',
                         this.getReorderUrl(),
                         {
                             success: function(o) {
                                 var response = YAHOO.lang.JSON.parse(o.responseText);
-                                this.table.deleteRow(sourceRecord);
-                                this.table.addRow(response.record,
-                                    this.table.getRecordIndex(targetRecord)+1);
+                                table.deleteRow(sourceRecord);
+                                table.addRow(response.record,
+                                    table.getRecordIndex(targetRecord)+1);
                             },
                             failure: function() {
                                 alert("Could not move record.");
@@ -219,12 +224,13 @@
         },
         
         removeStory: function(target) {
-            var record = this.table.getRecord(target);
+            var table = this.table;
+            var record = table.getRecord(target);
             YAHOO.util.Connect.asyncRequest('DELETE',
                 this.getDeleteUrl(record.getData('id')),
                 {
                     success: function (o) {
-                        this.table.deleteRow(target);
+                        table.deleteRow(target);
                     },
                     failure: function (o) {
                         alert("Could not delete this row.");
