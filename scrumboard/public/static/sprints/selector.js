@@ -19,7 +19,7 @@
         // Remove drag handle and delete button, add a checkbox
         var checkbox = {
             key: 'select',
-            label: 'Select',
+            label: ' ',
             className: 'select-button'
         };
         return [checkbox, cols[1], cols[2], cols[3], cols[4]];

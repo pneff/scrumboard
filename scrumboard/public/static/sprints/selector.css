@@ -2,3 +2,8 @@
     display: none;
     visibility: hidden;
 }
+.select-button {
+    cursor: pointer;
+    background: #dadada url(/static/sprints/add.png) no-repeat center center;
+    width: 8px;  height: 16px;
+}
