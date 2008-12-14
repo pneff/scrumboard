@@ -52,6 +52,14 @@ class Sprint(object):
     pass
 
 class Story(object):
+    def get_unassigned():
+        """Returns all stories which are not in any sprint yet."""
+        return meta.Session.query(Story).\
+            outerjoin(Story.sprints).\
+            filter(Sprint.id==None).\
+            all()
+    get_unassigned = staticmethod(get_unassigned)
+
     def reorder_all():
         """Reorders the position of all stories to have additional position
         space between all the stories.
@@ -82,8 +90,9 @@ class Story(object):
         return {'id': self.id, 'title': self.title, 'area': self.area,
                 'storypoints': self.storypoints, 'position': self.position}
 
-
 orm.mapper(Sprint, sprint_table, properties={
     'stories': orm.relation(Story, secondary=sprintstory_table)
 })
-orm.mapper(Story, story_table)
+orm.mapper(Story, story_table, properties={
+    'sprints': orm.relation(Sprint, secondary=sprintstory_table)
+})

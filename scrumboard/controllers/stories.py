@@ -12,9 +12,7 @@ log = logging.getLogger(__name__)
 class StoriesController(BaseController):
     def list(self):
         c.heading = "Backlog"
-        c.stories = model.meta.Session.query(model.Story)
-        c.stories = c.stories.order_by(model.story_table.c.position)
-        c.stories = c.stories.all()
+        c.stories = model.Story.get_unassigned()
         return render('/derived/stories/list.html')
 
     @jsonify
