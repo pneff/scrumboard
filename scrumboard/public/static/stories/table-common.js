@@ -191,7 +191,6 @@
                 Dom.removeClass(prevSelected, 'over');
             };
             this.ddRow.onDragDrop = function(ev) {
-                var table = this.table;
                 Dom.removeClass(prevSelected, 'over');
                 table.unselectAllRows();
                 YAHOO.util.DragDropMgr.stopDrag(ev, true);
@@ -206,7 +205,7 @@
                     var sourceRecord = table.getRecord(this.id);
                     var targetRecord = table.getRecord(drops[0].id);
                     YAHOO.util.Connect.asyncRequest('POST',
-                        this.getReorderUrl(),
+                        reorderUrl,
                         {
                             success: function(o) {
                                 var response = YAHOO.lang.JSON.parse(o.responseText);
