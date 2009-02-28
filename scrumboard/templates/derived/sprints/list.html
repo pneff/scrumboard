@@ -7,7 +7,7 @@
     </th>
     % for sprint in c.sprints:
     <tr>
-        <td>${sprint.id}</td>
+        <td><a href="${h.url_for(controller='sprints', action='show', id=sprint.id)}">${sprint.id}</a></td>
         <td>${sprint.start_date}</td>
     </tr>
     % endfor
