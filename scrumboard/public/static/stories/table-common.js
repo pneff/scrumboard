@@ -77,7 +77,6 @@
                         record.setData('id', response.id);
                     }
                     callback(true, newValue);
-                    that.updateTotals();
                 },
                 failure: function() { callback(false, newValue); }
             };
@@ -181,6 +180,28 @@
          * Add a row at the bottom with sums.
          */
         updateTotals: function() {
+            var tableNode = this.table._elTable;
+            var tfootNodes = tableNode.getElementsByTagName('tfoot');
+            var tfootNode = null;
+            if (tfootNodes.length == 0) {
+                // Create tfoot
+                tfootNode = document.createElement('tfoot');
+                var tr = document.createElement('tr'),
+                    td = null, div = null,
+                    columns = ['none0', 'title', 'area', 'sp', 'position', 'none1'];
+                tfootNode.appendChild(tr);
+                for (var i = 0; i < columns.length; i++) {
+                    td = document.createElement('td');
+                    div = document.createElement('div');
+                    div.className = 'yui-dt-liner';
+                    div.setAttribute('id', this.elementId + '_' + columns[i]);
+                    td.appendChild(div);
+                    tr.appendChild(td);
+                }
+                tableNode.appendChild(tfootNode);
+                document.getElementById(this.elementId + '_title').innerHTML = '<strong>Totals</strong>';
+            }
+            
             var totalStorypoints = 0;
             var records = this.table.getRecordSet().getRecords();
             var data = null;
@@ -191,26 +212,7 @@
                 }
             }
             totalStorypoints = '<strong>' + totalStorypoints + '</strong>';
-            if (this.totalsRow !== null) {
-                // Row exists. If it's at the end of the table (last row),
-                // then just modify it.
-                if (this.totalsRow === this.table.getLastTrEl()) {
-                    var record = this.table.getRecord(this.totalsRow);
-                    if (record.getData('storypoints') !== totalStorypoints) {
-                        record.setData('storypoints', totalStorypoints);
-                        this.table.render();
-                    }
-                    return;
-                }
-                
-                // Remove so we can re-add it at the end
-                this.table.deleteRow(this.totalsRow);
-                this.totalsRow = null;
-            }
-            this.table.addRow({
-                'id': -1, 'storypoints': totalStorypoints,
-                'title': '<b>Totals</b>'});
-            this.totalsRow = this.table.getLastTrEl();
+            document.getElementById(this.elementId + '_sp').innerHTML = totalStorypoints;
         },
         
         onCellMousedown: function(ev) {
@@ -256,7 +258,6 @@
                                 table.deleteRow(sourceRecord);
                                 table.addRow(response.record,
                                     table.getRecordIndex(targetRecord)+1);
-                                this.updateTotals();
                             },
                             failure: function() {
                                 alert("Could not move record.");
@@ -282,7 +283,6 @@
                 {
                     success: function (o) {
                         table.deleteRow(target);
-                        this.updateTotals();
                     },
                     failure: function (o) {
                         alert("Could not delete this row.");
