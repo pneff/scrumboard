@@ -5,6 +5,7 @@
     YAHOO.scrumboard.stories.table = function(id) {
         this.elementId = id;
         this.ddRow = null;
+        this.totalsRow = null;
         this.table = this.setupTable(id);
     };
     YAHOO.scrumboard.stories.table.prototype = {
@@ -68,6 +69,7 @@
         onTableSaveValue: function(editor, callback, newValue) {
             var record = editor.getRecord();
             var column = editor.getColumn();
+            var that = this;
             var connectCallbacks = {
                 success: function(o) {
                     var response = YAHOO.lang.JSON.parse(o.responseText);
@@ -75,6 +77,7 @@
                         record.setData('id', response.id);
                     }
                     callback(true, newValue);
+                    that.updateTotals();
                 },
                 failure: function() { callback(false, newValue); }
             };
@@ -153,11 +156,16 @@
             }
         },
         
+        onPostRender: function(oArgs) {
+            this.onPostRenderFocusFirstCell();
+            this.updateTotals();
+        },
+        
         /**
          * Focus the first cell on load and make drop targets out of every
          * row.
          */
-        onPostRender: function(oArgs) {
+        onPostRenderFocusFirstCell: function() {
             if (this.table.getSelectedCells().length === 0) {
                 this.table.selectCell(this.table.getNextTdEl(this.table.getFirstTdEl()));
                 this.table.focus();
@@ -167,6 +175,42 @@
                     new YAHOO.util.DDTarget(rows[i]);
                 }
             }
+        },
+        
+        /**
+         * Add a row at the bottom with sums.
+         */
+        updateTotals: function() {
+            var totalStorypoints = 0;
+            var records = this.table.getRecordSet().getRecords();
+            var data = null;
+            for (var i = 0; i < records.length; i++) {
+                data = records[i].getData();
+                if (data['id'] > -1) {
+                    totalStorypoints += data['storypoints'];
+                }
+            }
+            totalStorypoints = '<strong>' + totalStorypoints + '</strong>';
+            if (this.totalsRow !== null) {
+                // Row exists. If it's at the end of the table (last row),
+                // then just modify it.
+                if (this.totalsRow === this.table.getLastTrEl()) {
+                    var record = this.table.getRecord(this.totalsRow);
+                    if (record.getData('storypoints') !== totalStorypoints) {
+                        record.setData('storypoints', totalStorypoints);
+                        this.table.render();
+                    }
+                    return;
+                }
+                
+                // Remove so we can re-add it at the end
+                this.table.deleteRow(this.totalsRow);
+                this.totalsRow = null;
+            }
+            this.table.addRow({
+                'id': -1, 'storypoints': totalStorypoints,
+                'title': '<b>Totals</b>'});
+            this.totalsRow = this.table.getLastTrEl();
         },
         
         onCellMousedown: function(ev) {
@@ -212,6 +256,7 @@
                                 table.deleteRow(sourceRecord);
                                 table.addRow(response.record,
                                     table.getRecordIndex(targetRecord)+1);
+                                this.updateTotals();
                             },
                             failure: function() {
                                 alert("Could not move record.");
@@ -237,6 +282,7 @@
                 {
                     success: function (o) {
                         table.deleteRow(target);
+                        this.updateTotals();
                     },
                     failure: function (o) {
                         alert("Could not delete this row.");
